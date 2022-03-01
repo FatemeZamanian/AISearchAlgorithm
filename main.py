@@ -109,14 +109,14 @@ def bfs(mat,r,c):
     while len(q)>0:
         now=q.pop(0)
         neighbors,score,goal_score=find_neighbors(now,score,goal_score,path)
-        
         for c in neighbors:
             print((c.row,c.col))
             if c.row==goal[0] and c.col==goal[1]:
                 # if get_number(mat,goal[0],goal[1])<score:
                 print('find')
-                print(path)
-                print(score)
+                print((c.row,c.col))
+                # print(path)
+                # print(score)
                 return
             else:
                 if (c.row,c.col) not in path:
