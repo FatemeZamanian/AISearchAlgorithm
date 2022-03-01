@@ -1,3 +1,5 @@
+from os import path
+from sklearn import neighbors
 from node import Node
 
 def get_matrix():
@@ -62,40 +64,80 @@ def set_op(mat,r,c,score,goal_score):
     return score,goal_score
 
 
-def succes(mat,r,c):
-    gr,gc=find_goal(mat,)
+def find_neighbors(node,score,goal_score,path):
+    mat,r,c=read_testCase('test-case/2.txt')
+    cells=[]
+    if node.row>0 and get_opt(mat,node.row - 1, node.col) != 'w':
+        n=Node(node.row-1,node.col,mat[node.row-1][node.col],(node.row,node.col))
+        if (n.row,n.col) not in path:
+            score,goal_score=set_op(mat,n.row,n.col,score,goal_score)
+            cells.append(n)
+    if node.row<r-1 and get_opt(mat,node.row + 1, node.col) != 'w':
+        n=Node(node.row+1,node.col,mat[node.row+1][node.col],(node.row,node.col))
+        if (n.row,n.col) not in path:
+            score,goal_score=set_op(mat,n.row,n.col,score,goal_score)
+            cells.append(n)
+    if node.col>0 and get_opt(mat,node.row, node.col-1) != 'w':
+        n=Node(node.row,node.col-1,mat[node.row][node.col-1],(node.row,node.col))
+        if (n.row,n.col) not in path:
+            score,goal_score=set_op(mat,n.row,n.col,score,goal_score)
+            cells.append(n)
+    if node.col<c-1 and get_opt(mat,node.row, node.col+1) != 'w':
+        n=Node(node.row,node.col+1,mat[node.row][node.col+1],(node.row,node.col))
+        if (n.row,n.col) not in path:
+            score,goal_score=set_op(mat,n.row,n.col,score,goal_score)
+            cells.append(n)
+    return cells,score,goal_score
+
+
+
+
 
 
 def bfs(mat,r,c):
     root=find_root(mat,r,c)
     goal=find_goal(mat,r,c)
+    goal_score=get_number(mat,goal[0],goal[1])
     rr=root[0]
     rc=root[1]
     start=mat[rr][rc]
     now=(rr,rc,start)
     score=get_number(mat,rr,rc)
-    goal_score=get_number(mat,goal[0],goal[1])
     path=[]
     q=[]
     q.append(Node(root[0],root[1],start,'root'))
     while len(q)>0:
         now=q.pop(0)
         print(now.row,now.col,now.value)
-        for i in range(r):
-            for j in range(c):
-                if i==rr or j==rc:
-                    if get_opt(mat,i,j).lower()=='g':
-                        path.append((i,j))
-                        print('find')
-                        return
-                    elif ((i,j)) not in path:
-                        path.append((i,j))
-                        q.append(Node(i,j,mat[i][j],now))
-        return
-        rr=now.row
-        rc=now.col
+        neighbors,score,goal_score=find_neighbors(now,score,goal_score,path)
+        path.append((now.row,now.col))
+        for c in neighbors:
+            if c.row==goal[0] and c.col==goal[1]:
+                if get_number(mat,goal[0],goal[1])<score:
+                    print('find')
+                    return
+                else:
+                    q.append(c)
+
+
+print(path)
+        # for i in range(r):
+        #     for j in range(c):
+        #         if i==rr or j==rc:
+        #             if get_opt(mat,i,j).lower()=='g':
+        #                 path.append((i,j))
+        #                 print('find')
+        #                 return
+        #             elif 'w' not in (mat[i][j].lower()) and (i,j) not in path:
+        #                 path.append((i,j))
+        #                 print(i,j)
+        #                 q.append(Node(i,j,mat[i][j],now))
+        #                 score,goal_score=set_op(mat,i,j,score,goal_score)
+                        
+        # rr=now.row
+        # rc=now.col
+        # print(score)
         
-        print(path)
 
 
 
