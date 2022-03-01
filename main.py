@@ -48,26 +48,23 @@ def find_goal():
                 return [i, j]
 
 
-def is_goal(this_node, goal):
-    if this_node.pos == goal.pos:
-        return True
-    else:
-        return False
+def set_op(this_node, neighbor):
+    opt = neighbor.get_opt()
+    neighbor.agent_score = this_node.agent_score
+    neighbor.goal_score = this_node.goal_score
 
-
-def set_op(this_node, agent_score, goal_score):
-    op= this_node.get_opt()
-    if op=='+':
-        agent_score += this_node.get_number()
-    elif op=='-':
-        agent_score -= this_node.get_number()
-    elif op=='*':
-        agent_score *= this_node.get_number()
-    elif op=='a':
-        goal_score += this_node.get_number()
-    elif op=='b':
-        goal_score -= this_node.get_number()
-    return agent_score, goal_score
+    if opt=='+':
+        neighbor.agent_score += neighbor.get_number()
+    elif opt=='-':
+        neighbor.agent_score -= neighbor.get_number()
+    elif opt=='*':
+        neighbor.agent_score *= neighbor.get_number()
+    elif opt == '^':
+        neighbor.agent_score **= neighbor.get_number()
+    elif opt=='a':
+        neighbor.goal_score += neighbor.get_number()
+    elif opt=='b':
+        neighbor.goal_score -= neighbor.get_number()
 
 
 def find_neighbors(this_node:Node):
@@ -82,10 +79,10 @@ def find_neighbors(this_node:Node):
     ]
 
     for pos in neighbors_candidate_pos:
-        if 0 <= pos[0] < mat.shape[0] and 0 <=  pos[1] < mat.shape[1]:  # اگر مختصات همسایه معتبر بود
+        if 0 <= pos[0] < mat.shape[0] and 0 <= pos[1] < mat.shape[1]:  # اگر مختصات همسایه معتبر بود
             neighbor = Node(pos, mat, parent=this_node)
-            if neighbor.get_opt() != 'w' and neighbor.pos not in visited_nodes:
-                # print("visited_nodes", visited_nodes)
+            if neighbor.get_opt() != 'w':                
+                set_op(this_node, neighbor)
                 neighbors.append(neighbor)
         
     return neighbors
@@ -110,46 +107,44 @@ def bfs():
 
     goal = Node(goal_pos, mat)
     start = Node(start_pos, mat) # No parent means its the root node
-    goal_score = goal.get_number()
-    agent_score = start.get_number()
+    
+    start.agent_score = start.get_number()
+    start.goal_score = goal.get_number()
 
     q = []
     q.append(start)
     while len(q) > 0:
         this_node = q.pop(0)
-        neighbors = find_neighbors(this_node)
-
-        visited_nodes.append(this_node.pos)
 
         if this_node.parent:
             tree.create_node(str(this_node.pos), str(this_node.id), parent=str(this_node.parent.id))
         else:
-             tree.create_node(str(this_node.pos), str(this_node.id))  # No parent means its the root node 
+            tree.create_node(str(this_node.pos), str(this_node.id))  # No parent means its the root node 
 
+        neighbors = find_neighbors(this_node)
         for neighbor in neighbors:
-            agent_score, goal_score = set_op(neighbor, agent_score, goal_score)
-            if is_goal(neighbor, goal) and agent_score > goal_score:
-                print("Found")
-                print("agent score:", agent_score)
-                print("goal score:", goal_score)
-                print_path(neighbor)
-                return
+            if neighbor.pos == goal.pos:
+                if neighbor.agent_score > neighbor.goal_score:
+                    print("Found")
+                    print("agent score:", neighbor.agent_score)
+                    print("goal score:", neighbor.goal_score)
+                    print_path(neighbor)
+                    return
             else:
-                q.append(neighbor)
+                if neighbor.pos not in this_node.visited_nodes:
+                    q.append(neighbor)
 
-   
     print("Not found")
-    print("agent score:", agent_score)
-    print("goal score:", goal_score)
+    print("agent score:", this_node.agent_score)
+    print("goal score:", this_node.goal_score)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="BFS")
-    parser.add_argument("--file-path", default="test-case/3.txt")
+    parser.add_argument("--file-path", default="test-case/1.txt")
     args = parser.parse_args()
     
     tree = Tree()
     mat = read_testCase(args.file_path)
-    visited_nodes = []
     bfs()
     print("Tree")
     tree.show()
