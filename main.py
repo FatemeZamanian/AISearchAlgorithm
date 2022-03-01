@@ -1,5 +1,3 @@
-from sre_constants import SUCCESS
-from winreg import QueryInfoKey
 from node import Node
 
 def get_matrix():
@@ -74,25 +72,31 @@ def bfs(mat,r,c):
     rr=root[0]
     rc=root[1]
     start=mat[rr][rc]
-    now=(start,rr,rc)
+    now=(rr,rc,start)
     score=get_number(mat,rr,rc)
     goal_score=get_number(mat,goal[0],goal[1])
     path=[]
-    succes=False
-    #find neighbors
     q=[]
-    while succes==False:
+    q.append(Node(root[0],root[1],start,'root'))
+    while len(q)>0:
+        now=q.pop(0)
+        print(now.row,now.col,now.value)
         for i in range(r):
             for j in range(c):
                 if i==rr or j==rc:
                     if get_opt(mat,i,j).lower()=='g':
+                        path.append((i,j))
                         print('find')
-                        succes=True
-                    elif (i,j) not in path:
-                        path.append(i,j)
+                        return
+                    elif ((i,j)) not in path:
+                        path.append((i,j))
                         q.append(Node(i,j,mat[i][j],now))
-        while len(q)>0:
-            now=q.pop(0)
+        return
+        rr=now.row
+        rc=now.col
+        
+        print(path)
+
 
 
         # for i in range(r):
