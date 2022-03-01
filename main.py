@@ -103,24 +103,28 @@ def bfs(mat,r,c):
     start=mat[rr][rc]
     now=(rr,rc,start)
     score=get_number(mat,rr,rc)
-    path=[]
+    path=[(rr,rc)]
     q=[]
     q.append(Node(root[0],root[1],start,'root'))
     while len(q)>0:
         now=q.pop(0)
-        print(now.row,now.col,now.value)
         neighbors,score,goal_score=find_neighbors(now,score,goal_score,path)
-        path.append((now.row,now.col))
+        
         for c in neighbors:
+            print((c.row,c.col))
             if c.row==goal[0] and c.col==goal[1]:
                 if get_number(mat,goal[0],goal[1])<score:
                     print('find')
+                    print(path)
                     return
-                else:
+            else:
+                if (c.row,c.col) not in path:
+                    path.append((c.row,c.col))
                     q.append(c)
+    print(goal_score)
+    print(score)
+    print(path)
 
-
-print(path)
         # for i in range(r):
         #     for j in range(c):
         #         if i==rr or j==rc:
@@ -160,5 +164,5 @@ print(path)
         #                 print(now)
                         
 
-mat,r,c=read_testCase('test-case/2.txt')
+mat,r,c=read_testCase('test-case/1.txt')
 bfs(mat,r,c)
