@@ -138,6 +138,44 @@ def bfs():
     print("agent score:", this_node.agent_score)
     print("goal score:", this_node.goal_score)
 
+def dfs():
+    # print(mat.shape)
+    start_pos = find_root()
+    goal_pos = find_goal()
+
+    goal = Node(goal_pos, mat)
+    start = Node(start_pos, mat) # No parent means its the root node
+    
+    start.agent_score = start.get_number()
+    start.goal_score = goal.get_number()
+
+    q = []
+    q.append(start)
+    while len(q) > 0:
+        this_node = q.pop(len(q)-1)
+
+        if this_node.parent:
+            tree.create_node(str(this_node.pos), str(this_node.id), parent=str(this_node.parent.id))
+        else:
+            tree.create_node(str(this_node.pos), str(this_node.id))  # No parent means its the root node 
+
+        neighbors = find_neighbors(this_node)
+        for neighbor in neighbors:
+            if neighbor.pos == goal.pos:
+                if neighbor.agent_score > neighbor.goal_score:
+                    print("Found")
+                    print("agent score:", neighbor.agent_score)
+                    print("goal score:", neighbor.goal_score)
+                    print_path(neighbor)
+                    return
+            else:
+                if neighbor.pos not in this_node.visited_nodes:
+                    q.append(neighbor)
+
+    print("Not found")
+    print("agent score:", this_node.agent_score)
+    print("goal score:", this_node.goal_score)
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="BFS")
     parser.add_argument("--file-path", default="test-case/1.txt")
@@ -145,6 +183,6 @@ if __name__ == "__main__":
     
     tree = Tree()
     mat = read_testCase(args.file_path)
-    bfs()
+    dfs()
     print("Tree")
     tree.show()
