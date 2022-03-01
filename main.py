@@ -1,6 +1,11 @@
 from os import path
 from sklearn import neighbors
+from torch import true_divide
 from node import Node
+import numpy as np
+import argparse
+from treelib import Tree
+
 
 def get_matrix():
     rows=int(input('enter row: '))
@@ -17,153 +22,134 @@ def get_matrix():
     return mat
 
 
-def read_testCase(file):
-    fle=open(file)
-    bf=fle.read()
-    mat=[]
-    rows=bf.split('\n')
-    r,c=rows[0].split(' ')
-    for i,row in enumerate(rows):
-        if i !=0:
-            mat.append(row.split(' '))
-    return mat,int(r),int(c)
+def read_testCase(file_path):
+    f = open(file_path)
+    rows_count, cols_count = f.readline().split(' ')
+    rows_count = int(rows_count)
+    cols_count = int(cols_count)
+    mat=[]    
+    for i in range(rows_count):
+        mat.append(f.readline().rstrip().split(' '))  # rstrip removes \n
+    
+    mat = np.array(mat)
+    return mat
 
 
-def find_root(mat,r,c):
-    for i in range(int(r)):
-        for j in range(int(c)):
-            if 's' in (mat[i][j].lower()):
-                return (i,j)
+def find_root():
+    for i in range(mat.shape[0]):
+        for j in range(mat.shape[1]):
+            if 's' in (mat[i, j].lower()):
+                return [i, j]
 
-def find_goal(mat,r,c):
-    for i in range(int(r)):
-        for j in range(int(c)):
-            if 'g' in (mat[i][j].lower()):
-                return (i,j)
-
-
-def get_opt(mat,r, c):
-    return mat[r][c][0].lower()
-
-def get_number(mat,r,c):
-    return int(mat[r][c][1:])
+def find_goal():
+    for i in range(mat.shape[0]):
+        for j in range(mat.shape[1]):
+            if 'g' in (mat[i, j].lower()):
+                return [i, j]
 
 
-def set_op(mat,r,c,score,goal_score):
-    op= get_opt(mat,r,c)
+def is_goal(this_node, goal):
+    if this_node.pos == goal.pos:
+        return True
+    else:
+        return False
+
+
+def set_op(this_node, agent_score, goal_score):
+    op= this_node.get_opt()
     if op=='+':
-        score+=get_number(mat,r,c)
-    if op=='-':
-        score-=get_number(mat,r,c)
-    if op=='*':
-        score*=get_number(mat,r,c)
-    if op=='a':
-        goal_score+=get_number(mat,r,c)
-    if op=='b':
-        goal_score-=get_number(mat,r,c)
-    return score,goal_score
+        agent_score += this_node.get_number()
+    elif op=='-':
+        agent_score -= this_node.get_number()
+    elif op=='*':
+        agent_score *= this_node.get_number()
+    elif op=='a':
+        goal_score += this_node.get_number()
+    elif op=='b':
+        goal_score -= this_node.get_number()
+    return agent_score, goal_score
 
 
-def find_neighbors(node,score,goal_score,path):
-    mat,r,c=read_testCase('test-case/2.txt')
-    cells=[]
-    if node.row>0 and get_opt(mat,node.row - 1, node.col) != 'w':
-        n=Node(node.row-1,node.col,mat[node.row-1][node.col],(node.row,node.col))
-        if (n.row,n.col) not in path:
-            score,goal_score=set_op(mat,n.row,n.col,score,goal_score)
-            cells.append(n)
-    if node.row<r-1 and get_opt(mat,node.row + 1, node.col) != 'w':
-        n=Node(node.row+1,node.col,mat[node.row+1][node.col],(node.row,node.col))
-        if (n.row,n.col) not in path:
-            score,goal_score=set_op(mat,n.row,n.col,score,goal_score)
-            cells.append(n)
-    if node.col>0 and get_opt(mat,node.row, node.col-1) != 'w':
-        n=Node(node.row,node.col-1,mat[node.row][node.col-1],(node.row,node.col))
-        if (n.row,n.col) not in path:
-            score,goal_score=set_op(mat,n.row,n.col,score,goal_score)
-            cells.append(n)
-    if node.col<c-1 and get_opt(mat,node.row, node.col+1) != 'w':
-        n=Node(node.row,node.col+1,mat[node.row][node.col+1],(node.row,node.col))
-        if (n.row,n.col) not in path:
-            score,goal_score=set_op(mat,n.row,n.col,score,goal_score)
-            cells.append(n)
-    return cells,score,goal_score
+def find_neighbors(this_node:Node):
+    neighbors = []
+
+    # مختصات خانه هایی که احتمالا همسایه باشند
+    neighbors_candidate_pos = [
+        [this_node.row-1, this_node.col],
+        [this_node.row, this_node.col-1],
+        [this_node.row+1, this_node.col],
+        [this_node.row, this_node.col+1]
+    ]
+
+    for pos in neighbors_candidate_pos:
+        if 0 <= pos[0] < mat.shape[0] and 0 <=  pos[1] < mat.shape[1]:  # اگر مختصات همسایه معتبر بود
+            neighbor = Node(pos, mat, parent=this_node)
+            if neighbor.get_opt() != 'w' and neighbor.pos not in visited_nodes:
+                # print("visited_nodes", visited_nodes)
+                neighbors.append(neighbor)
+        
+    return neighbors
 
 
+def print_path(goal):
+    # حرکت از پایین به بالا
+    # حرکت از هدف به سمت ریشه
+    print("Path")
+    this_node = goal
+    print(this_node.pos)
+    while this_node.parent != None:
+        this_node = this_node.parent
+        print(this_node.pos)
+    print()
 
 
+def bfs():
+    # print(mat.shape)
+    start_pos = find_root()
+    goal_pos = find_goal()
 
+    goal = Node(goal_pos, mat)
+    start = Node(start_pos, mat) # No parent means its the root node
+    goal_score = goal.get_number()
+    agent_score = start.get_number()
 
-def bfs(mat,r,c):
-    root=find_root(mat,r,c)
-    goal=find_goal(mat,r,c)
-    goal_score=get_number(mat,goal[0],goal[1])
-    rr=root[0]
-    rc=root[1]
-    start=mat[rr][rc]
-    now=(rr,rc,start)
-    score=get_number(mat,rr,rc)
-    path=[(rr,rc)]
-    q=[]
-    q.append(Node(root[0],root[1],start,'root'))
-    while len(q)>0:
-        now=q.pop(0)
-        neighbors,score,goal_score=find_neighbors(now,score,goal_score,path)
-        for c in neighbors:
-            print((c.row,c.col))
-            if c.row==goal[0] and c.col==goal[1]:
-                # if get_number(mat,goal[0],goal[1])<score:
-                print('find')
-                print((c.row,c.col))
-                # print(path)
-                # print(score)
+    q = []
+    q.append(start)
+    while len(q) > 0:
+        this_node = q.pop(0)
+        neighbors = find_neighbors(this_node)
+
+        visited_nodes.append(this_node.pos)
+
+        if this_node.parent:
+            tree.create_node(str(this_node.pos), str(this_node.id), parent=str(this_node.parent.id))
+        else:
+             tree.create_node(str(this_node.pos), str(this_node.id))  # No parent means its the root node 
+
+        for neighbor in neighbors:
+            agent_score, goal_score = set_op(neighbor, agent_score, goal_score)
+            if is_goal(neighbor, goal) and agent_score > goal_score:
+                print("Found")
+                print("agent score:", agent_score)
+                print("goal score:", goal_score)
+                print_path(neighbor)
                 return
             else:
-                if (c.row,c.col) not in path:
-                    path.append((c.row,c.col))
-                    q.append(c)
-    # print(goal_score)
-    print(score)
-    # print(path)
+                q.append(neighbor)
 
-        # for i in range(r):
-        #     for j in range(c):
-        #         if i==rr or j==rc:
-        #             if get_opt(mat,i,j).lower()=='g':
-        #                 path.append((i,j))
-        #                 print('find')
-        #                 return
-        #             elif 'w' not in (mat[i][j].lower()) and (i,j) not in path:
-        #                 path.append((i,j))
-        #                 print(i,j)
-        #                 q.append(Node(i,j,mat[i][j],now))
-        #                 score,goal_score=set_op(mat,i,j,score,goal_score)
-                        
-        # rr=now.row
-        # rc=now.col
-        # print(score)
-        
+   
+    print("Not found")
+    print("agent score:", agent_score)
+    print("goal score:", goal_score)
 
-
-
-        # for i in range(r):
-        #     for j in range(c):
-        #         if i==rr or j==rc:
-        #             if get_opt(mat,i,j).lower()=='g':
-        #                 print(mat)
-        #                 path.append((i,j))
-        #                 print(path)
-        #                 print(score)
-        #                 succes=True
-        #             if 'w' not in (mat[i][j].lower()) and (i,j) not in path:
-        #                 # neighbors.append(Node(i,j,mat[i][j],now))
-        #                 now=(mat[i][j],i,j)
-        #                 rr=i
-        #                 rc=j
-        #                 score,goal_score=set_op(mat,i,j,score,goal_score)
-        #                 path.append((i,j))
-        #                 print(now)
-                        
-
-mat,r,c=read_testCase('test-case/1.txt')
-bfs(mat,r,c)
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="BFS")
+    parser.add_argument("--file-path", default="test-case/3.txt")
+    args = parser.parse_args()
+    
+    tree = Tree()
+    mat = read_testCase(args.file_path)
+    visited_nodes = []
+    bfs()
+    print("Tree")
+    tree.show()
