@@ -1,14 +1,13 @@
-from os import path
-from node import Node
 import numpy as np
 import argparse
+from torch import import_ir_module
 from treelib import Tree
-
 
 from bfs import bfs
 from dfs import dfs
 from dls import dls
 from ids import ids
+from bds import bds
 
 def get_matrix():
     rows=int(input('enter row: '))
@@ -43,7 +42,7 @@ if __name__ == "__main__":
     parser.add_argument("--file-path", default="test-case/3.txt")
     args = parser.parse_args()
     mat = read_testCase(args.file_path)
-    ids(mat)
+    bds(mat)
 
     
 

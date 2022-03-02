@@ -10,6 +10,8 @@ class Node:
         self.parent = parent
         self.id = Node.counter
         Node.counter += 1
+        self.left_visited=False
+        self.right_visited=False
         
 
         if self.parent:
