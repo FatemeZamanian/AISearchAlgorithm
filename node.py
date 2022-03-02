@@ -11,11 +11,14 @@ class Node:
         self.parent = parent
         self.id = Node.counter
         Node.counter += 1
+        
 
         if self.parent:
             self.visited_nodes = copy.deepcopy(self.parent.visited_nodes)
+            self.depth=self.parent.depth+1
         else:
             self.visited_nodes = []
+            self.depth=0
         self.visited_nodes.append(self.pos)
 
     def get_opt(self):
