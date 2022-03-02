@@ -189,7 +189,6 @@ def dfs():
 
     q = []
     q.append(start)
-    limit=3
     while len(q) > 0:
         this_node = q.pop(0)
         
@@ -209,10 +208,9 @@ def dfs():
                     print_path(neighbor)
                     return
             else:
-                if neighbor.pos not in this_node.visited_nodes :
-                    # q.append(neighbor)
+                if neighbor.pos not in this_node.visited_nodes:
                     q.insert(0,neighbor)
-                limit-=1
+                
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="BFS")
