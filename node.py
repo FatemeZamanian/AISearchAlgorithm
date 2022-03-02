@@ -12,6 +12,8 @@ class Node:
         Node.counter += 1
         self.left_visited=False
         self.right_visited=False
+        self.agent_score=0
+        self.goal_score=0
         
 
         if self.parent:
