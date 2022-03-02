@@ -1,6 +1,5 @@
 import copy
 
-
 class Node:
     counter = 0
     def __init__(self, pos, mat, parent=None):
