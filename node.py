@@ -2,7 +2,7 @@ import copy
 
 class Node:
     counter = 0
-    def __init__(self, pos, mat, parent=None,dir=None):
+    def __init__(self, pos, mat, parent=None, dir=None):
         self.row = pos[0]
         self.col = pos[1]
         self.pos = pos
@@ -13,7 +13,6 @@ class Node:
         self.agent_score=0
         self.goal_score=0
         self.dir=dir
-        
 
         if self.parent:
             self.visited_nodes = copy.deepcopy(self.parent.visited_nodes)

@@ -41,28 +41,14 @@ def find_neighbors(mat,this_node:Node,dir=None):
         [this_node.row+1, this_node.col],
         [this_node.row, this_node.col+1]
     ]
-    if dir=='r':
-        for pos in neighbors_candidate_pos:
-            if 0 <= pos[0] < mat.shape[0] and 0 <= pos[1] < mat.shape[1]:  # اگر مختصات همسایه معتبر بود
-                neighbor = Node(pos, mat, parent=this_node,dir='r')
-                if neighbor.get_opt() != 'w':                
-                    set_op(this_node, neighbor)
-                    neighbors.append(neighbor)
-        
-    elif dir=='l':
-        for pos in neighbors_candidate_pos:
-            if 0 <= pos[0] < mat.shape[0] and 0 <= pos[1] < mat.shape[1]:  # اگر مختصات همسایه معتبر بود
-                neighbor = Node(pos, mat, parent=this_node,dir='l')
-                if neighbor.get_opt() != 'w':                
-                    set_op(this_node, neighbor)
-                    neighbors.append(neighbor)
-    else :
-        for pos in neighbors_candidate_pos:
-            if 0 <= pos[0] < mat.shape[0] and 0 <= pos[1] < mat.shape[1]:  # اگر مختصات همسایه معتبر بود
-                neighbor = Node(pos, mat, parent=this_node)
-                if neighbor.get_opt() != 'w':                
-                    set_op(this_node, neighbor)
-                    neighbors.append(neighbor)
+
+    for pos in neighbors_candidate_pos:
+        if 0 <= pos[0] < mat.shape[0] and 0 <= pos[1] < mat.shape[1]:  # اگر مختصات همسایه معتبر بود
+            neighbor = Node(pos, mat, parent=this_node, dir=this_node.dir)
+            if neighbor.get_opt() != 'w':                
+                set_op(this_node, neighbor)
+                neighbors.append(neighbor)
+
         
     return neighbors
 
@@ -77,6 +63,45 @@ def print_path(goal):
         this_node = this_node.parent
         print(this_node.pos)
     print()
+
+
+def print_path_bi_directional(n1, n2):
+    print("Path:")
+    
+    print("Start")
+    path1 = []
+    this_node = n1
+    path1.append(this_node.pos)
+    while this_node.parent != None:
+        this_node = this_node.parent
+        path1.append(this_node.pos)
+
+    path1 = []
+    this_node = n1
+    path1.append(this_node.pos)
+    while this_node.parent != None:
+        this_node = this_node.parent
+        path1.append(this_node.pos)
+
+    path1.reverse()
+
+    for p in path1[:-1]:  # -1 because the meeting node appears twice
+        print(p)
+    
+    print("------")
+
+    path2 = []
+    this_node = n2
+    path2.append(this_node.pos)
+    while this_node.parent != None:
+        this_node = this_node.parent
+        path2.append(this_node.pos)
+
+    for p in path2:
+        print(p)
+
+    print("Goal")
+
 
 def print_tree(tree):
     tree.show()
