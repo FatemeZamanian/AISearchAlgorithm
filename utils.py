@@ -31,7 +31,7 @@ def set_op(this_node, neighbor):
         neighbor.goal_score -= neighbor.get_number()
 
 
-def find_neighbors(mat,this_node:Node):
+def find_neighbors(mat,this_node:Node,dir=None):
     neighbors = []
 
     # مختصات خانه هایی که احتمالا همسایه باشند
@@ -41,13 +41,28 @@ def find_neighbors(mat,this_node:Node):
         [this_node.row+1, this_node.col],
         [this_node.row, this_node.col+1]
     ]
-
-    for pos in neighbors_candidate_pos:
-        if 0 <= pos[0] < mat.shape[0] and 0 <= pos[1] < mat.shape[1]:  # اگر مختصات همسایه معتبر بود
-            neighbor = Node(pos, mat, parent=this_node)
-            if neighbor.get_opt() != 'w':                
-                set_op(this_node, neighbor)
-                neighbors.append(neighbor)
+    if dir=='r':
+        for pos in neighbors_candidate_pos:
+            if 0 <= pos[0] < mat.shape[0] and 0 <= pos[1] < mat.shape[1]:  # اگر مختصات همسایه معتبر بود
+                neighbor = Node(pos, mat, parent=this_node,dir='r')
+                if neighbor.get_opt() != 'w':                
+                    set_op(this_node, neighbor)
+                    neighbors.append(neighbor)
+        
+    elif dir=='l':
+        for pos in neighbors_candidate_pos:
+            if 0 <= pos[0] < mat.shape[0] and 0 <= pos[1] < mat.shape[1]:  # اگر مختصات همسایه معتبر بود
+                neighbor = Node(pos, mat, parent=this_node,dir='l')
+                if neighbor.get_opt() != 'w':                
+                    set_op(this_node, neighbor)
+                    neighbors.append(neighbor)
+    else :
+        for pos in neighbors_candidate_pos:
+            if 0 <= pos[0] < mat.shape[0] and 0 <= pos[1] < mat.shape[1]:  # اگر مختصات همسایه معتبر بود
+                neighbor = Node(pos, mat, parent=this_node)
+                if neighbor.get_opt() != 'w':                
+                    set_op(this_node, neighbor)
+                    neighbors.append(neighbor)
         
     return neighbors
 

@@ -18,7 +18,6 @@ def bfs(mat):
     q.append(start)
     while len(q) > 0:
         this_node = q.pop(0)
-
         if this_node.parent:
             tree.create_node(str(this_node.pos), str(this_node.id), parent=str(this_node.parent.id))
         else:
