@@ -1,3 +1,4 @@
+import copy
 from treelib import Tree
 from utils import *
 from node import Node
@@ -6,26 +7,35 @@ from colorama import Fore
 
 nodes = []
 
+
+def get_path(node):
+    path = []
+    this_node = node
+    while this_node.parent != None:
+        this_node = this_node.parent
+        path.append(copy.deepcopy(this_node))
+    return path
+
+
+
+
+
 def check():
     for n1 in nodes:
         for n2 in nodes:
             if n1.dir == 'r' and n2.dir == 'l' and n1.pos == n2.pos:
                 print("A path Found, checking for scores condition...")
+                left_path=get_path(n2)
+                this_node=n1
+                for node in left_path:
+                    set_op(this_node,node)
+                    this_node=node
+                
 
-                try:
-                    total_agent_score = n1.agent_score + n2.parent.agent_score
-                except:
-                    total_agent_score = n1.parent.agent_score + n2.agent_score
-
-                try:
-                    total_goal_score = n1.goal_score + n2.parent.goal_score
-                except:
-                    total_goal_score = n1.parent.goal_score + n2.goal_score
-
-                if total_agent_score > total_goal_score:
+                if this_node.agent_score > this_node.goal_score:
                     print(Fore.GREEN, "Scores condition is OK :)", Fore.RESET)
-                    print("agent score:", total_agent_score)
-                    print("goal score:", total_goal_score)
+                    print("agent score:", this_node.agent_score)
+                    print("goal score:", this_node.goal_score)
                     print_path_bi_directional(n1, n2)
                     exit()
                 else:
@@ -37,13 +47,9 @@ def bds(mat):
     goal_pos = find_goal(mat)
     goal = Node(goal_pos, mat,dir='l')
     start = Node(start_pos, mat,dir='r') # No parent means its the root node
-    visited=[]
 
     start.agent_score = start.get_number()
     start.goal_score = goal.get_number()
-
-    goal.agent_score = start.get_number()
-    goal.goal_score = 0
 
     nodes.append(start)
     nodes.append(goal)
@@ -55,7 +61,6 @@ def bds(mat):
 
         check()
         
-        visited.append(this_node.pos)
         neighbors = find_neighbors(mat,this_node,this_node.dir)
         for neighbor in neighbors:
             if neighbor.pos not in this_node.visited_nodes:

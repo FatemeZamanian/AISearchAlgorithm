@@ -1,10 +1,9 @@
 from treelib import Tree
-from utils import find_root,find_goal,find_neighbors,print_tree,print_path
+from utils import *
 from node import Node
 
 def bfs(mat):
     tree = Tree()
-    # print(mat.shape)
     start_pos = find_root(mat)
     goal_pos = find_goal(mat)
 
