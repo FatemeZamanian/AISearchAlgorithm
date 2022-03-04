@@ -42,4 +42,4 @@ if __name__ == "__main__":
     parser.add_argument("--file-path", default="test-case/1.txt")
     args = parser.parse_args()
     mat = read_testCase(args.file_path)
-    bds(mat)
+    bfs(mat)
