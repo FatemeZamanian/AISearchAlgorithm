@@ -43,7 +43,7 @@ def bds(mat):
     start.goal_score = goal.get_number()
 
     goal.agent_score = start.get_number()
-    goal.goal_score = goal.get_number()
+    goal.goal_score = 0
 
     nodes.append(start)
     nodes.append(goal)
