@@ -1,4 +1,4 @@
-from node import Node
+from node import *
 def find_root(mat):
     for i in range(mat.shape[0]):
         for j in range(mat.shape[1]):
@@ -44,7 +44,7 @@ def find_neighbors(mat,this_node:Node,dir=None):
 
     for pos in neighbors_candidate_pos:
         if 0 <= pos[0] < mat.shape[0] and 0 <= pos[1] < mat.shape[1]:  # اگر مختصات همسایه معتبر بود
-            neighbor = Node(pos, mat, parent=this_node, dir=this_node.dir)
+            neighbor = NodeA(pos, mat, parent=this_node, dir=this_node.dir)
             if neighbor.get_opt() != 'w':                
                 set_op(this_node, neighbor)
                 neighbors.append(neighbor)

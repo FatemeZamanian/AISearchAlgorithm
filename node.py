@@ -26,8 +26,6 @@ class Node:
 
         self.visited_nodes.append(self.pos)
 
-        
-
 
     def get_opt(self):
         return self.content[0].lower()
@@ -40,24 +38,27 @@ class NodeA(Node):
     def __init__(self, pos, mat, parent=None, dir=None):
         super().__init__(pos, mat, parent, dir)
         self.g=0
-        if self.get_op()=='a' or self.get_op()=='-':
-            self.cost=1
-        elif self.get_op()=='b' or self.get_op=='+':
-            self.cost=2
-        elif self.get_op()=='*':
-            self.cost=5
-        elif self.get_op()=='**':
-            self.cost=11
-        elif self.node.get_op()=='g':
-            self.cost=1
-        
-        if self.parent:
+        if self.parent :
             self.h=self.parent.h+self.cost
         else:
             self.h=0
+    
+    def set_cost(self):
+        op=self.content[0].lower()
+        if op=='a' or op=='-':
+            self.cost=1
+        elif op=='b' or op=='+':
+            self.cost=2
+        elif op=='*':
+            self.cost=5
+        elif op=='**':
+            self.cost=11
+        elif op=='g':
+            self.cost=1
+        else:
+            self.cost=0
+        return self.cost
+    
+    
 
-    # def g_pred(self,node):
-    #     self.g+=node.cost+node.parent.cost
-
-    #     self.g_pred()
 
