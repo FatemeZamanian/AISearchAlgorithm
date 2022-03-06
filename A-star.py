@@ -1,7 +1,34 @@
 from utils import *
+import copy
 
-def calc_toatal_cost():
-    pass
+def calc_g(node,goal):
+    costs =0
+    this_node = goal
+    while this_node.parent != node:
+        this_node = this_node.parent
+        costs+=this_node.cost   
+    return costs
+
+
+
+def calc_h(mat,node,goal):
+    q = []
+    predicts=[]
+    q.append(node)
+    while len(q) > 0:
+        this_node = q.pop(0)
+        g_cost=calc_g(this_node,goal)
+        
+        neighbors = find_neighbors(mat,this_node)
+        for neighbor in neighbors:
+            if neighbor.pos == goal.pos:
+                #calc g
+                pass
+            else:
+                if neighbor.pos not in this_node.visited_nodes:
+                    q.append(neighbor)
+
+    
 
 
 def a_star(mat):
