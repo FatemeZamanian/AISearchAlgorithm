@@ -39,7 +39,7 @@ class NodeA(Node):
         super().__init__(pos, mat, parent, dir)
         self.g=0
         if self.parent :
-            self.h=self.parent.h+self.cost
+            self.h=self.parent.h+self.set_cost()
         else:
             self.h=0
     
