@@ -7,8 +7,8 @@ def bfs(mat):
     start_pos = find_root(mat)
     goal_pos = find_goal(mat)
 
-    goal = Node(goal_pos, mat)
-    start = Node(start_pos, mat) # No parent means its the root node
+    goal = NodeA(goal_pos, mat)
+    start = NodeA(start_pos, mat) # No parent means its the root node
     
     start.agent_score = start.get_number()
     start.goal_score = goal.get_number()

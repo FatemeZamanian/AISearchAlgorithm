@@ -1,7 +1,7 @@
 import copy
 from treelib import Tree
 from utils import *
-from node import Node
+from node import *
 from colorama import Fore
 
 
@@ -45,8 +45,8 @@ def check():
 def bds(mat):
     start_pos = find_root(mat)
     goal_pos = find_goal(mat)
-    goal = Node(goal_pos, mat,dir='l')
-    start = Node(start_pos, mat,dir='r') # No parent means its the root node
+    goal = NodeA(goal_pos, mat,dir='l')
+    start = NodeA(start_pos, mat,dir='r') # No parent means its the root node
 
     start.agent_score = start.get_number()
     start.goal_score = goal.get_number()
