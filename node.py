@@ -39,7 +39,7 @@ class NodeA(Node):
         super().__init__(pos, mat, parent, dir)
         self.g = 0
         if self.parent:
-            self.g += self.parent.agent_score + self.set_cost()
+            self.g += self.parent.g + self.set_cost()
         self.h = self.calc_h(mat)
 
     def set_cost(self):
