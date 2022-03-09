@@ -1,4 +1,6 @@
 import copy
+from utils import *
+
 
 class Node:
     counter = 0
@@ -16,7 +18,6 @@ class Node:
         self.g=0
         self.cost=None
         
-        
         if self.parent:
             self.visited_nodes = copy.deepcopy(self.parent.visited_nodes)
             self.depth=self.parent.depth+1
@@ -25,7 +26,6 @@ class Node:
             self.depth=0
 
         self.visited_nodes.append(self.pos)
-
 
     def get_opt(self):
         return self.content[0].lower()
@@ -37,12 +37,11 @@ class Node:
 class NodeA(Node):
     def __init__(self, pos, mat, parent=None, dir=None):
         super().__init__(pos, mat, parent, dir)
-        self.g=0
-        if self.parent :
-            self.h=self.parent.h+self.set_cost()
-        else:
-            self.h=0
-    
+        self.g = 0
+        if self.parent:
+            self.g += self.parent.agent_score + self.set_cost()
+        self.h = self.calc_h(mat)
+
     def set_cost(self):
         op=self.content[0].lower()
         if op=='a' or op=='-':
@@ -59,6 +58,13 @@ class NodeA(Node):
             self.cost=0
         return self.cost
     
+    def calc_h(self, mat):
+        costs = 0
+        for i in range(mat.shape[0]):
+            for j in range(mat.shape[1]):
+                if mat[i,j] not in self.visited_nodes:
+                    costs += self.set_cost() 
+        return costs
     
 
 

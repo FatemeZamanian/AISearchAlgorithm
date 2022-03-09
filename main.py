@@ -1,6 +1,5 @@
 import numpy as np
 import argparse
-from torch import import_ir_module
 from treelib import Tree
 
 from bfs import bfs
@@ -9,6 +8,8 @@ from dls import dls
 from ids import ids
 from bds import bds
 from Astar import a_star
+from idAstar import id_a_star
+
 
 def get_matrix():
     rows=int(input('enter row: '))
@@ -40,8 +41,8 @@ def read_testCase(file_path):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="")
-    parser.add_argument("--file-path", default="test-case/1.txt")
-    parser.add_argument("--algorithm", default="ids")
+    parser.add_argument("--file-path", default="test-case/3.txt")
+    parser.add_argument("--algorithm", default="ida*")
     args = parser.parse_args()
     mat = read_testCase(args.file_path)
     if args.algorithm=="bfs":
@@ -54,5 +55,7 @@ if __name__ == "__main__":
         bds(mat)
     elif args.algorithm=="a*":
         a_star(mat)
+    elif args.algorithm=="ida*":
+        id_a_star(mat)
     else:
         print('algorithm not found ')   

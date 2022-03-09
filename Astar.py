@@ -1,17 +1,7 @@
-from sklearn import neighbors
 from utils import *
 import copy
 from node import *
-
-def calc_h(mat,node:NodeA):
-    costs =0
-    for i in range(mat.shape[0]):
-        for j in range(mat.shape[1]):
-            if mat[i,j] not in node.visited_nodes:
-                costs+=node.set_cost()    
-    return costs+node.h
     
-
 
 def a_star(mat):
     start_pos = find_root(mat)
@@ -26,12 +16,15 @@ def a_star(mat):
     q = []
     q.append(start)
     while len(q) > 0:
-        min_cost=calc_h(mat,q[0])
+        min_cost = q[0].g + q[0].h
         for i in range(len(q)):
-            if calc_h(mat,q[i])<=min_cost:
-                min=q[i]
-                min_index=i
+            cost = q[i].g + q[i].h
+            if cost <= min_cost:
+                min_cost = cost
+                min_index = i
+
         this_node = q.pop(min_index)
+
         neighbors = find_neighbors(mat,this_node)
         for neighbor in neighbors:
             if neighbor.pos == goal.pos:
@@ -49,5 +42,3 @@ def a_star(mat):
     print("agent score:", this_node.agent_score)
     print("goal score:", this_node.goal_score)
     
-
-
