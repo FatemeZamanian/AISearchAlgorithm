@@ -66,7 +66,7 @@ def print_path(goal):
         this_node = this_node.parent
         print(this_node.pos)
         path.append(this_node)
-    print('k:',len(path)+1)
+    print('k:',len(path))
 
 
 def print_path_bi_directional(n1, n2):
@@ -99,7 +99,7 @@ def print_path_bi_directional(n1, n2):
         print(p)
 
     print("Goal")
-    print('k:',len(path1)+len(path2))
+    print('k:',len(path1)+len(path2)-3)
 
 
 def print_tree(tree):
