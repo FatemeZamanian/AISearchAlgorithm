@@ -56,6 +56,7 @@ def find_neighbors(mat,this_node:Node,dir=None):
 
 
 def print_path(goal):
+    path=[]
     # حرکت از پایین به بالا
     # حرکت از هدف به سمت ریشه
     print("Path")
@@ -64,19 +65,14 @@ def print_path(goal):
     while this_node.parent != None:
         this_node = this_node.parent
         print(this_node.pos)
-    print()
+        path.append(this_node)
+    print('k:',len(path)+1)
 
 
 def print_path_bi_directional(n1, n2):
     print("Path:")
     
     print("Start")
-    path1 = []
-    this_node = n1
-    path1.append(this_node.pos)
-    while this_node.parent != None:
-        this_node = this_node.parent
-        path1.append(this_node.pos)
 
     path1 = []
     this_node = n1
@@ -103,6 +99,7 @@ def print_path_bi_directional(n1, n2):
         print(p)
 
     print("Goal")
+    print('k:',len(path1)+len(path2))
 
 
 def print_tree(tree):

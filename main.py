@@ -42,7 +42,7 @@ def read_testCase(file_path):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="")
     parser.add_argument("--file-path", default="test-case/3.txt")
-    parser.add_argument("--algorithm", default="a*")
+    parser.add_argument("--algorithm", default="bds")
     args = parser.parse_args()
     mat = read_testCase(args.file_path)
     if args.algorithm=="bfs":

@@ -24,7 +24,7 @@ def check():
     for n1 in nodes:
         for n2 in nodes:
             if n1.dir == 'r' and n2.dir == 'l' and n1.pos == n2.pos:
-                print("A path Found, checking for scores condition...")
+                # print("A path Found, checking for scores condition...")
                 left_path=get_path(n2)
                 this_node=n1
                 for node in left_path:
@@ -38,8 +38,8 @@ def check():
                     print("goal score:", this_node.goal_score)
                     print_path_bi_directional(n1, n2)
                     exit()
-                else:
-                    print(Fore.RED, "Scores condition is not OK :(", Fore.RESET)
+                # else:
+                #     print(Fore.RED, "Scores condition is not OK :(", Fore.RESET)
 
 
 def bds(mat):
