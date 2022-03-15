@@ -6,7 +6,7 @@ def dls(mat):
     tree = Tree()
     start_pos = find_root(mat)
     goal_pos = find_goal(mat)
-    limit=4
+    limit=5
     goal = Node(goal_pos, mat)
     start = Node(start_pos, mat) # No parent means its the root node
     

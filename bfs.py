@@ -1,6 +1,6 @@
 from treelib import Tree
 from utils import *
-from node import Node
+from node import *
 
 def bfs(mat):
     tree = Tree()

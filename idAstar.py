@@ -1,5 +1,4 @@
 from utils import *
-import copy
 from node import *
     
 

@@ -23,6 +23,7 @@ def get_matrix():
                 break
             else:
                 print('wrong dim!!! \n Try again...')
+    mat=np.array(mat)
     return mat
 
 
@@ -34,7 +35,7 @@ def read_testCase(file_path):
     mat=[]    
     for i in range(rows_count):
         mat.append(f.readline().rstrip().split(' '))  # rstrip removes \n
-    
+    # print(mat)
     mat = np.array(mat)
     return mat
 
@@ -45,6 +46,7 @@ if __name__ == "__main__":
     parser.add_argument("--algorithm", default="bds")
     args = parser.parse_args()
     mat = read_testCase(args.file_path)
+    # mat=get_matrix()
     if args.algorithm=="bfs":
         bfs(mat)
     elif args.algorithm=="dfs":
@@ -57,5 +59,7 @@ if __name__ == "__main__":
         a_star(mat)
     elif args.algorithm=="ida*":
         id_a_star(mat)
+    elif args.algorithm=="dls":
+        dls(mat)
     else:
         print('algorithm not found ')   

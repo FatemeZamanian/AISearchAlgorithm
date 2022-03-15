@@ -33,7 +33,7 @@ def set_op(this_node, neighbor):
         neighbor.goal_score -= neighbor.get_number()
 
 
-def find_neighbors(mat,this_node:Node,dir=None):
+def find_neighbors(mat,this_node:NodeA,dir=None):
     neighbors = []
 
     # مختصات خانه هایی که احتمالا همسایه باشند
